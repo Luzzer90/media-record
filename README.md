@@ -25,4 +25,3 @@ npm start
 - `components/VideoRecorder.jsx`: Main component with video recorder logic
 - `components/AudioRecorder.jsx`: (Extend similarly if needed)
 - `component/util/downloadBlob.js`: Blob downloader utility
-- `recorder.css`: Component styling
