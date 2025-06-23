@@ -16,6 +16,7 @@ function VideoRecorder() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
 
+      // Set the video preview source to the stream
       if (videoPreviewRef.current) {
         videoPreviewRef.current.srcObject = stream;
         videoPreviewRef.current.play();
@@ -23,10 +24,12 @@ function VideoRecorder() {
 
       mediaRecorderRef.current = new MediaRecorder(stream);
       chunks.current = [];
+      // Collect data chunks as they become available
 
       mediaRecorderRef.current.ondataavailable = e => {
         if (e.data.size > 0) chunks.current.push(e.data);
       };
+      // When recording stops, create a Blob from the collected chunks
 
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunks.current, { type: 'video/webm' });
@@ -35,6 +38,7 @@ function VideoRecorder() {
         setShowPlayer(true);
         stream.getTracks().forEach(track => track.stop());
       };
+      // Start recording
 
       mediaRecorderRef.current.start();
       setRecording(true);
@@ -46,12 +50,14 @@ function VideoRecorder() {
 
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
+    // Stop the video stream
     setRecording(false);
   };
 
   const handleDownload = () => {
     const blob = new Blob(chunks.current, { type: 'video/webm' });
     downloadBlob(blob, 'video_recording.webm');
+    // Trigger download of the recorded video
   };
 
   return (
