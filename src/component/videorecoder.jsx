@@ -2,16 +2,14 @@ import React, { useRef, useState,useEffect } from 'react';
 import { downloadBlob } from '../component/util/downloadBlob';
 import './videorecoder.css'; // Assuming you have a CSS file for styling
 
-
-
 function VideoRecorder() {
   const videoPreviewRef = useRef(null);
   const [videoURL, setVideoURL] = useState('');
   const [recording, setRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [showPlayer, setShowPlayer] = useState(false);
   const [pastRecordings, setPastRecordings] = useState([]);
+  const [hoverStates, setHoverStates] = useState([]);
 
   const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
@@ -21,18 +19,27 @@ function VideoRecorder() {
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('videoRecordings')) || [];
     setPastRecordings(stored);
+    setHoverStates(new Array(stored.length).fill(false));
   }, []);
 
   const saveRecording = (blobUrl) => {
-    const updated = [...pastRecordings, { url: blobUrl, timestamp: new Date().toLocaleString() }];
+    const updated = [...pastRecordings, { url: blobUrl, timestamp: new Date().toLocaleString(), type: 'video/webm' }];
     setPastRecordings(updated);
+    setHoverStates([...hoverStates, false]);
     localStorage.setItem('videoRecordings', JSON.stringify(updated));
   };
 
   const deleteRecording = (index) => {
     const updated = pastRecordings.filter((_, i) => i !== index);
     setPastRecordings(updated);
+    setHoverStates(updated.map(() => false));
     localStorage.setItem('videoRecordings', JSON.stringify(updated));
+  };
+
+  const downloadRecording = (url, index) => {
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => downloadBlob(blob, `recording_${index + 1}.webm`));
   };
 
   const startTimer = () => {
@@ -72,7 +79,6 @@ function VideoRecorder() {
         const blob = new Blob(chunks.current, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
         setVideoURL(url);
-        setShowPlayer(true);
         saveRecording(url);
         stream.getTracks().forEach(track => track.stop());
       };
@@ -107,9 +113,23 @@ function VideoRecorder() {
     setIsPaused(prev => !prev);
   };
 
-  const handleDownload = () => {
-    const blob = new Blob(chunks.current, { type: 'video/webm' });
-    downloadBlob(blob, 'video_recording.webm');
+  const handleMouseEnter = (index) => {
+    const updated = [...hoverStates];
+    updated[index] = true;
+    setHoverStates(updated);
+    const video = document.getElementById(`video-thumb-${index}`);
+    if (video?.canPlayType('video/webm')) video.play();
+  };
+
+  const handleMouseLeave = (index) => {
+    const updated = [...hoverStates];
+    updated[index] = false;
+    setHoverStates(updated);
+    const video = document.getElementById(`video-thumb-${index}`);
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
   };
 
   return (
@@ -144,40 +164,65 @@ function VideoRecorder() {
         )}
       </div>
 
-      {showPlayer && videoURL && (
-        <div className="preview-box">
-          <h3>Preview</h3>
-          <video
-            controls
-            src={videoURL}
-            style={{
-              width: '100%',
-              borderRadius: '12px',
-              marginBottom: '1rem',
-              backgroundColor: '#000'
-            }}
-          ></video>
-          <button onClick={handleDownload} className="download-btn">⬇️ Download Video</button>
-        </div>
-      )}
-
       {pastRecordings.length > 0 && (
         <div className="preview-box">
           <h3>📁 Past Recordings</h3>
-          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+          <div className="recording-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
             {pastRecordings.map((rec, index) => (
-              <li key={index} style={{ marginBottom: '0.75rem' }}>
-                <small>{rec.timestamp}</small>
-                <video src={rec.url} controls style={{ width: '100%', marginTop: '0.5rem' }}></video>
-                <button
-                  onClick={() => deleteRecording(index)}
-                  style={{ marginTop: '0.5rem', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '6px', padding: '0.4rem 0.8rem', cursor: 'pointer' }}
-                >
-                  🗑 Delete
-                </button>
-              </li>
+              <div
+                key={index}
+                style={{
+                  width: 'calc(33% - 1rem)',
+                  background: '#f5f5f5',
+                  padding: '0.5rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave(index)}
+              >
+                <video
+                  id={`video-thumb-${index}`}
+                  src={rec.url}
+                  muted
+                  playsInline
+                  type="video/webm"
+                  style={{ width: '100%', borderRadius: '6px' }}
+                />
+                <small style={{ display: 'block', marginTop: '0.25rem' }}>{rec.timestamp}</small>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                  <button
+                    onClick={() => downloadRecording(rec.url, index)}
+                    style={{
+                      backgroundColor: '#1a73e8',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '0.3rem 0.6rem',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    ⬇️ Download
+                  </button>
+                  <button
+                    onClick={() => deleteRecording(index)}
+                    style={{
+                      backgroundColor: '#f44336',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '0.3rem 0.6rem',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    🗑 Delete
+                  </button>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
