@@ -10,6 +10,10 @@
   background-color: #464444;
   color: #ffffff;
 }
+button.active {
+  background-color: #0056b3;
+  box-shadow: 0 0 5px #007bff;
+}
 
 /* Container */
 .container {
@@ -43,11 +47,29 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
 
+.button-group button {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  border-radius: 20px;
+  border: 2px solid #007bff;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.button-group button.active,
+.button-group button:hover {
+  background: #007bff;
+  color: white;
+}
+
+
 /* Default Button */
-button {
+/* button {
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 6px;
@@ -56,7 +78,7 @@ button {
   background-color: #007bff;
   color: white;
   transition: background-color 0.2s;
-}
+} */
 
 button:hover {
   background-color: #0056b3;

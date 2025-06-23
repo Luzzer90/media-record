@@ -16,7 +16,7 @@ function App() {
   
    return (
     <div className={theme}>
-      {/* Floating Toggle Switch */}
+      {/* Theme Toggle in Top-Right Corner */}
       <div className="theme-toggle-wrapper">
         <label className="theme-toggle-label"></label>
         <label className="theme-switch">
@@ -25,19 +25,28 @@ function App() {
         </label>
       </div>
 
-      {/* Main App UI */}
+      {/* Main Container */}
       <div className="container">
         <h1> Audio & Video Recorder</h1>
 
         <div className="button-group">
-          <button onClick={() => setMode('audio')}>Audio Mode</button>
-          <button onClick={() => setMode('video')}>Video Mode</button>
+          <button
+            className={mode === 'audio' ? 'active' : ''}
+            onClick={() => setMode('audio')}
+          >
+            Audio Mode
+          </button>
+          <button
+            className={mode === 'video' ? 'active' : ''}
+            onClick={() => setMode('video')}
+          >
+            Video Mode
+          </button>
         </div>
 
         {mode === 'audio' ? <AudioRecorder /> : <VideoRecorder />}
       </div>
     </div>
-  
   );
 }
 

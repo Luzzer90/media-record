@@ -5,3 +5,28 @@ audio {
   border-radius: 8px;
   margin-top: 1rem;
 }
+.download-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #0c57d1;
+}
+.audio-visualizer {
+  display: block;
+  margin: 0.5rem auto;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.preview-box {
+  margin-top: 1.5rem;
+}

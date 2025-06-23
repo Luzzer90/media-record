@@ -26,3 +26,25 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+.control-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.control-btn:hover {
+  background-color: #555;
+}
