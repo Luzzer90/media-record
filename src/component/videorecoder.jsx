@@ -134,7 +134,7 @@ function VideoRecorder() {
 
   return (
     <div className="recorder-box">
-      <h2 className="recorder-title">📹 Video Recorder</h2>
+      <h2 className="recorder-title"> Video Recorder</h2>
       {recording && (
         <div className="recorder-timer">
           ⏱ {String(Math.floor(elapsedTime / 60)).padStart(2, '0')}:{String(elapsedTime % 60).padStart(2, '0')}
@@ -155,24 +155,24 @@ function VideoRecorder() {
       ></video>
 
       <div className="control-bar">
-        {!recording && <button className="control-btn" onClick={startRecording}>🎬 Start</button>}
+        {!recording && <button className="control-btn" onClick={startRecording}> Start</button>}
         {recording && (
           <>
-            <button className="control-btn" onClick={stopRecording}>🛑 Stop</button>
-            <button className="control-btn" onClick={togglePause}>{isPaused ? '▶️ Resume' : '⏸ Pause'}</button>
+            <button className="control-btn" onClick={stopRecording}> Stop</button>
+            <button className="control-btn" onClick={togglePause}>{isPaused ? 'Resume' : ' Pause'}</button>
           </>
         )}
       </div>
 
       {pastRecordings.length > 0 && (
         <div className="preview-box">
-          <h3>📁 Past Recordings</h3>
+          <h3> Past Recordings</h3>
           <div className="recording-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
             {pastRecordings.map((rec, index) => (
               <div
                 key={index}
                 style={{
-                  width: 'calc(33% - 1rem)',
+                  width: 'calc(31% - 1rem)',
                   background: '#f5f5f5',
                   padding: '0.5rem',
                   borderRadius: '8px',
@@ -203,7 +203,7 @@ function VideoRecorder() {
                       fontSize: '0.9rem'
                     }}
                   >
-                    ⬇️ Download
+                    Download
                   </button>
                   <button
                     onClick={() => deleteRecording(index)}
@@ -217,7 +217,7 @@ function VideoRecorder() {
                       fontSize: '0.9rem'
                     }}
                   >
-                    🗑 Delete
+                     Delete
                   </button>
                 </div>
               </div>

@@ -117,7 +117,7 @@ function AudioRecorder() {
       {recording && (
         <>
           <div className="recorder-timer">
-            ⏱ {String(Math.floor(elapsedTime / 60)).padStart(2, '0')}:{String(elapsedTime % 60).padStart(2, '0')}
+             {String(Math.floor(elapsedTime / 60)).padStart(2, '0')}:{String(elapsedTime % 60).padStart(2, '0')}
           </div>
           <canvas ref={canvasRef} width="300" height="50" className="audio-visualizer"></canvas>
         </>
